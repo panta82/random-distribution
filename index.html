@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Random distribution</title>
+	<style>
+		html, body {
+			padding: 0;
+			margin: 0;
+			height: 100%;
+		}
+		canvas {
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+</head>
+<body>
+	<canvas />
+<script>
+	const canvas = document.getElementsByTagName('canvas')[0];
+	const ctx = canvas.getContext('2d');
+	let width, height;
+	
+	const PROPS = {
+		dotStyle: 'white',
+		dotSize: 2,
+		dotSpace: 2
+	};
+	
+	let dots = [{x: 5, y: 7}, {x: 15, y: 72}];
+	
+	document.body.addEventListener('resize', () => {
+		updateSize();
+	});
+	updateSize();
+	
+	// *********************************************************************
+
+	function generate() {
+
+	}
+
+	function updateSize() {
+		width = document.body.offsetWidth;
+		height = document.body.offsetHeight;
+		canvas.width = width;
+		canvas.height = height;
+		generate();
+		render();
+	}
+
+	function render() {
+		ctx.fillStyle = 'black';
+		ctx.fillRect(0, 0, width, height);
+		ctx.fillStyle = PROPS.dotStyle;
+		for (const dot of dots) {
+			ctx.arc(dot.x, dot.y, PROPS.dotSize / 2, 0, 360, false);
+			ctx.fill()
+		}
+	}
+</script>
+</body>
+</html>
