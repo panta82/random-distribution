@@ -32,10 +32,7 @@
       const dotSpace = 2;
       const dotsDebug = false;
 
-      let dots = [
-        { x: 5, y: 7 },
-        { x: 15, y: 72 },
-      ];
+      let dots = [];
 
       window.addEventListener("resize", () => {
         updateSize();
@@ -86,28 +83,28 @@
           const dotRight = region.width - dotLeft;
           const dotBottom = region.height - dotTop;
 
-          addRegion(
+          addRegions(
             region.x,
             region.y,
             dotLeft + dotSpace,
             dotTop - dotSpace,
             level
           );
-          addRegion(
+          addRegions(
             x + dotSpace,
             region.y,
             dotRight - dotSpace,
             dotTop + dotSpace,
             level
           );
-          addRegion(
+          addRegions(
             region.x,
             y - dotSpace,
             dotLeft - dotSpace,
             dotBottom + dotSpace,
             level
           );
-          addRegion(
+          addRegions(
             x - dotSpace,
             y + dotSpace,
             dotRight + dotSpace,
@@ -116,13 +113,37 @@
           );
         }
 
-        function addRegion(x, y, width, height, level) {
-          if (width * height >= Math.pow(dotSpace * 2, 2)) {
-            const region = { x, y, width, height, level };
-            regions.push(region);
-            if (debugRegions) {
-              debugRegions.push(region);
+        function addRegions(x, y, width, height, level) {
+          if (width < dotSpace * 2 || height < dotSpace * 2) {
+            // Too small area, abort
+            return;
+          }
+
+          // Make sure we don't add a rect that is not squarish
+          const whRatio = width / height;
+          if (whRatio > 1.5) {
+            const chunks = Math.ceil(whRatio);
+            const chunkWidth = width / chunks;
+            for (let chunk = 0; chunk < chunks; chunk++) {
+              addRegions(x + chunk * chunkWidth, y, chunkWidth, height, level);
             }
+            return;
+          }
+
+          const hwRatio = height / width;
+          if (hwRatio > 1.5) {
+            const chunks = Math.ceil(hwRatio);
+            const chunkHeight = height / chunks;
+            for (let chunk = 0; chunk < chunks; chunk++) {
+              addRegions(x, y + chunk * chunkHeight, width, chunkHeight, level);
+            }
+            return;
+          }
+
+          const region = { x, y, width, height, level };
+          regions.push(region);
+          if (debugRegions) {
+            debugRegions.push(region);
           }
         }
       }
